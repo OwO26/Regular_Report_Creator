@@ -220,4 +220,4 @@ if uploaded_files:
         result_path = "Final_Planning_Table.xlsx"
         if os.path.exists(result_path):
             with open(result_path, "rb") as f:
-                st.download_button("Click here to download the result file", f, file_name="Final_Planning_Table_{datetime.today().strftime("%d_%b_%Y")}.xlsx")
+                st.download_button("Click here to download the result file", f, file_name="Final_Planning_Table_{datetime.today().strftime('%d_%b_%Y')}.xlsx")
