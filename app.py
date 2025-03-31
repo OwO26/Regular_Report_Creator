@@ -10,25 +10,21 @@ uploaded_files = st.file_uploader("请上传多个CSV文件（例如：Q1.csv, Q
 
 file_paths = {}
 if uploaded_files:
+    st.success(f"✅ 共上传 {len(uploaded_files)} 个文件")
+    st.write("文件名：", [file.name for file in uploaded_files])
+    
     for uploaded_file in uploaded_files:
         filename = uploaded_file.name
         if filename.upper().startswith("Q") and filename.upper().endswith(".CSV"):
             temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
             temp_file.write(uploaded_file.read())
             temp_file.close()
-            file_paths[filename[:-4]] = temp_file.name  # 去掉 .csv 后缀作为键名，例如 Q1
-
-
-if uploaded_file is not None:
-    st.success("✅ 文件上传成功")
-    df = pd.read_csv(uploaded_file)
-    st.write("文件预览（前5行）：")
-    st.dataframe(df.head())
+            file_paths[filename[:-4]] = temp_file.name  # 用 Q1、Q2 作键名
 
     if st.button("点击运行数据处理脚本"):
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmp_input:
-            df.to_csv(tmp_input.name, index=False)
-            input_path = tmp_input.name
+        # 你的处理代码入口，从这里开始调用 file_paths 去读取数据
+        # 你原始的脚本可以直接套进来，file_paths 已自动生成
+        st.info("开始运行数据处理脚本……")
 
         # 插入原始处理脚本代码开始
         #!/usr/bin/env python
