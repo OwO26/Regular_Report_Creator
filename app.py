@@ -19,7 +19,6 @@ Before updating your files, please:
 
 ---
 
-Please select and upload multiple CSV files:
 """)
 
 uploaded_files = st.file_uploader("Please select and upload multiple CSV files", type=["csv"], accept_multiple_files=True)
