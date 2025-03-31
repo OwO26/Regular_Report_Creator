@@ -95,9 +95,9 @@ if uploaded_files:
             "Agent Name", "Applicant Name", "Proposal"
         ]
        # 自动识别 Rec Date / Reception Date / Received Date 等等
-         for col in filtered_df.columns:
-             if "rec" in col.lower() and "date" in col.lower():
-                 filtered_df = filtered_df.rename(columns={col: "Reception Date"})
+       for col in filtered_df.columns:
+          if "rec" in col.lower() and "date" in col.lower():
+             filtered_df = filtered_df.rename(columns={col: "Reception Date"})
 
        
         column_renames = {
