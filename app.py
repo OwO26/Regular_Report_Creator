@@ -7,19 +7,23 @@ st.set_page_config(page_title="Regular Report Creator", layout="wide")
 st.title("📊 Semi-automatic Regular Report Creator")
 
 st.markdown("""
-**Pre-work：**
+### Pre-work Instructions
 
-Before updating your files, please:
-1. Download the latest files from **Acolaid** using conditions 
-   - StatClass=(from Q1 to Q6 seperately) and；
-   - Decision Date Is Null
-2. Add column **Meeting Date** and its data manually.
-2. Ensure files are named as `Q1.csv`, `Q2.csv`, etc.
-3. Only CSV files are accepted.
+Before updating the files, please:
+
+1. Download the latest files from **Acolaid** using the following conditions:  
+   - `StatClass` = Q1 to Q6 (separately)  
+   - `Decision Date` is null
+
+2. Manually add a column named **Meeting Date** and input the relevant data.
+
+3. Ensure files are named as `Q1.csv`, `Q2.csv`, etc.
+
+4. Only **CSV** files are accepted.
 
 ---
-
 """)
+
 
 uploaded_files = st.file_uploader("Please select and upload multiple CSV files", type=["csv"], accept_multiple_files=True)
 
