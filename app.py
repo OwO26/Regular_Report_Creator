@@ -216,7 +216,13 @@ if uploaded_files:
         # 插入原始处理脚本代码结束
         st.success("✅ Data processing completed!")
 
-        result_path = "Final_Planning_Table.xlsx"
-        if os.path.exists(result_path):
-            with open(result_path, "rb") as f:
-                st.download_button("Click here to download the result file", f, file_name="Final_Planning_Table_{datetime.today().strftime('%d_%b_%Y')}.xlsx")
+        today_str = datetime.today().strftime("%d_%b_%Y")
+        output_filename = f"Regular_Report_on_Pending_Application_{today_str}.xlsx"
+
+        if os.path.exists(output_path):
+           with open(output_path, "rb") as f:
+              st.download_button(
+                 "Click here to download the result file",
+                 f,
+                 file_name=output_filename
+              )
