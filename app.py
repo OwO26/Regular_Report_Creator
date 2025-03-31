@@ -117,7 +117,7 @@ if uploaded_files:
         
         # === 第六步：导出初始 Excel 文件 ===
         output_path = "Final_Planning_Table.xlsx"
-        processed_df.to_excel(output_path, index=False, encoding="utf-8")
+        processed_df.to_excel(output_path, index=False, engine='openpyxl')
         
 
         
