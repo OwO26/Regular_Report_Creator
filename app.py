@@ -6,6 +6,11 @@ import tempfile
 st.set_page_config(page_title="Regular Report Creator", layout="wide")
 st.title("📊 Semi-automatic Regular Report Creator")
 
+# 🔄 放在最上方
+if st.button("🔄 Reset Page"):
+    st.session_state.clear()
+    st.rerun()
+
 st.markdown("""
 ### Pre-work Instructions
 
