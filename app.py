@@ -3,15 +3,31 @@ import pandas as pd
 import os
 import tempfile
 
-st.set_page_config(page_title="CSV 数据处理工具", layout="wide")
-st.title("📊 自动数据处理工具")
+st.set_page_config(page_title="Regular Report Creator", layout="wide")
+st.title("📊 Semi-automatic Regular Report Creator")
 
-uploaded_files = st.file_uploader("请上传多个CSV文件（例如：Q1.csv, Q2.csv...）", type=["csv"], accept_multiple_files=True)
+st.markdown("""
+**Pre-work：**
+
+Before updating your files, please:
+1. Download the latest files from **Acolaid** using conditions 
+   - StatClass=(from Q1 to Q6 seperately) and；
+   - Decision Date Is Null
+2. Add column **Meeting Date** and its data manually.
+2. Ensure files are named as `Q1.csv`, `Q2.csv`, etc.
+3. Only CSV files are accepted.
+
+---
+
+Please select and upload multiple CSV files:
+""")
+
+uploaded_files = st.file_uploader("Please select and upload multiple CSV files", type=["csv"], accept_multiple_files=True)
 
 file_paths = {}
 if uploaded_files:
-    st.success(f"✅ 共上传 {len(uploaded_files)} 个文件")
-    st.write("文件名：", [file.name for file in uploaded_files])
+    st.success(f"✅ Total uploaded {len(uploaded_files)} file(s)")
+    st.write("file name：", [file.name for file in uploaded_files])
     
     for uploaded_file in uploaded_files:
         filename = uploaded_file.name
@@ -21,10 +37,10 @@ if uploaded_files:
             temp_file.close()
             file_paths[filename[:-4]] = temp_file.name  # 用 Q1、Q2 作键名
 
-    if st.button("点击运行数据处理脚本"):
+    if st.button("Create a Regular Report"):
         # 你的处理代码入口，从这里开始调用 file_paths 去读取数据
         # 你原始的脚本可以直接套进来，file_paths 已自动生成
-        st.info("开始运行数据处理脚本……")
+        st.info("Script Running")
 
         # 插入原始处理脚本代码开始
         #!/usr/bin/env python
@@ -195,13 +211,13 @@ if uploaded_files:
         
         # === 第十步：保存最终版本 ===
         wb.save(output_path)
-        print(f"✅ Excel 文件已保存：{output_path}")
+        print(f"✅ Excel file have been saved：{output_path}")
         
         
         # 插入原始处理脚本代码结束
-        st.success("✅ 数据处理完成！")
+        st.success("✅ Data processing completed!")
 
         result_path = "Final_Planning_Table.xlsx"
         if os.path.exists(result_path):
             with open(result_path, "rb") as f:
-                st.download_button("📥 下载结果文件", f, file_name="Final_Planning_Table.xlsx")
+                st.download_button("Click here to download the result file", f, file_name="Final_Planning_Table_{datetime.today().strftime("%d_%b_%Y")}.xlsx")
