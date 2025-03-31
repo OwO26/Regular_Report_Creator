@@ -201,7 +201,7 @@ if uploaded_files:
         # 插入原始处理脚本代码结束
         st.success("✅ 数据处理完成！")
 
-        result_path = "result.csv"
+        result_path = "Final_Planning_Table.xlsx"
         if os.path.exists(result_path):
             with open(result_path, "rb") as f:
-                st.download_button("📥 下载结果文件", f, file_name="result.csv")
+                st.download_button("📥 下载结果文件", f, file_name="Final_Planning_Table.xlsx")
