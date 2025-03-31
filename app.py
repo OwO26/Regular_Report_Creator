@@ -123,17 +123,18 @@ if uploaded_files:
         
 
         # === 第五步：格式化日期并排序 ===
+        # === 第五步：格式化日期并排序 ===
         date_format = "%d %b %Y"
         for col in ['Reception Date', 'Reg Date', 'Expiry Date', 'Meeting Date']:
             try:
-                # 先强制转换为字符串，避免嵌套结构导致 pd.to_datetime 报错
-                processed_df[col] = processed_df[col].astype(str)
-                processed_df[col] = pd.to_datetime(processed_df[col], errors='coerce') \
-                    .dt.strftime(date_format).fillna("")
+                processed_df[col] = pd.to_datetime(
+                    processed_df[col].astype(str),
+                    errors='coerce',
+                    dayfirst=True  # ✅ 关键点：支持英式日期
+                ).dt.strftime(date_format).fillna("")
             except Exception as e:
-                st.warning(f"⚠️ 日期列 {col} 处理失败：{e}")
+                st.warning(f"⚠️ 日期列 {col} 转换失败：{e}")
 
-        # 额外：解析用于排序的 Reception Date（也做一次类型转换）
         try:
             processed_df['Reception Date (parsed)'] = pd.to_datetime(
                 processed_df['Reception Date'].astype(str),
@@ -142,7 +143,9 @@ if uploaded_files:
             )
             processed_df = processed_df.sort_values(by='Reception Date (parsed)', ascending=True).drop(columns=['Reception Date (parsed)'])
         except Exception as e:
-            st.warning(f"⚠️ 排序时 Reception Date 解析失败：{e}")
+            st.warning(f"⚠️ Reception Date 排序解析失败：{e}")
+
+
 
         
         # === 第六步：导出初始 Excel 文件 ===
