@@ -38,18 +38,12 @@ if uploaded_files:
             temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
             temp_file.write(uploaded_file.read())
             temp_file.close()
-            file_paths[filename[:-4]] = temp_file.name  # 用 Q1、Q2 作键名
+            file_paths[filename[:-4]] = temp_file.name
 
     if st.button("Create a Regular Report"):
-        # 你的处理代码入口，从这里开始调用 file_paths 去读取数据
-        # 你原始的脚本可以直接套进来，file_paths 已自动生成
+
         st.info("Script Running")
 
-        # 插入原始处理脚本代码开始
-        #!/usr/bin/env python
-        # coding: utf-8
-        
-        
         import pandas as pd
         from datetime import datetime
         from openpyxl import load_workbook
@@ -57,20 +51,14 @@ if uploaded_files:
         from openpyxl.worksheet.table import Table, TableStyleInfo
         from openpyxl.utils import get_column_letter
         from openpyxl.styles import Alignment, Font, PatternFill
-        
-        
-        
-        # === 第一步：读取 CSV 文件并保存为 UTF-8 ===
 
         
         
         dataframes = {}
         for name, path in file_paths.items():
-            # 读取 ISO-8859-1 编码的 CSV 并直接保存在内存中（UTF-8 处理由 pandas 内部完成）
             df = pd.read_csv(path, encoding="ISO-8859-1")
             dataframes[name] = df
         
-        # === 第二步：合并表格并计算时间列 ===
         merged_df = pd.concat(dataframes.values(), ignore_index=True)
         today = datetime.today()
         merged_df['Reg Date'] = pd.to_datetime(merged_df['Reg Date'], errors='coerce')
@@ -86,11 +74,9 @@ if uploaded_files:
             lambda x: (today - x).days // 7 if pd.notnull(x) else 'N/A'
         )
         
-        # === 第三步：删除 PAS 类型行 ===
         filtered_df = merged_df[merged_df['App Type'] != 'PAS'].copy()
         
         
-        # === 第四步：提取和排序字段 ===
         desired_columns = [
             "Application Number", "Application Address", "Officer", "Reception Date", "Reg Date",
             "No. of weeks in system", "Expiry Date", "No. of weeks past expiry date", "Meeting Date", 
@@ -125,19 +111,16 @@ if uploaded_files:
                 processed_df[col] = ""
         processed_df = processed_df[desired_columns]
         
-
-        # === 第五步：格式化日期并排序 ===
-        # === 第五步：格式化日期并排序 ===
         date_format = "%d %b %Y"
         for col in ['Reception Date', 'Reg Date', 'Expiry Date', 'Meeting Date']:
             try:
                 processed_df[col] = pd.to_datetime(
                     processed_df[col].astype(str),
                     errors='coerce',
-                    dayfirst=True  # ✅ 关键点：支持英式日期
+                    dayfirst=True
                 ).dt.strftime(date_format).fillna("")
             except Exception as e:
-                st.warning(f"⚠️ 日期列 {col} 转换失败：{e}")
+                st.warning(f"⚠️ Date coloumn {col} Unavailable：{e}")
 
         try:
             processed_df['Reception Date (parsed)'] = pd.to_datetime(
@@ -147,18 +130,11 @@ if uploaded_files:
             )
             processed_df = processed_df.sort_values(by='Reception Date (parsed)', ascending=True).drop(columns=['Reception Date (parsed)'])
         except Exception as e:
-            st.warning(f"⚠️ Reception Date 排序解析失败：{e}")
+            st.warning(f"⚠️ Reception Date Order Fail：{e}")
 
-
-
-        
-        # === 第六步：导出初始 Excel 文件 ===
         output_path = "Final_Planning_Table.xlsx"
         processed_df.to_excel(output_path, index=False, engine='openpyxl')
         
-
-        
-        # === 第七步：高亮 Proposal 列中符合条件的单元格（黄色）===
         wb = load_workbook(output_path)
         ws = wb.active
         header = [cell.value for cell in ws[1]]
@@ -174,8 +150,6 @@ if uploaded_files:
                     cell.fill = yellow_fill
         
 
-        
-        # === 第八步：对三列中最大的前10个数值做浅红高亮 ===
         light_red_fill = PatternFill(start_color="FFCCCC", end_color="FFCCCC", fill_type="solid")
         target_columns = [
             "No. of weeks in system",
@@ -197,7 +171,7 @@ if uploaded_files:
                 for _, cell in top_cells:
                     cell.fill = light_red_fill
         
-        # === 第九步：设置格式为表格（浅蓝绿色，Style Light 12）===
+
         if ws.tables:
             for tbl in list(ws.tables.values()):
                 del ws.tables[tbl.name]
@@ -219,23 +193,23 @@ if uploaded_files:
         last_row = ws.max_row
         last_col = ws.max_column
         
-        # 第三步：合并最后一行下方的整行
+
         merge_range = f"A{last_row + 1}:{get_column_letter(last_col)}{last_row + 1}"
         ws.merge_cells(merge_range)
         
-        # 第四步：设置单元格样式和文本
+
         footer_cell = ws.cell(row=last_row + 1, column=1)
         footer_cell.value = f"This report covers all applications received up to {datetime.today().strftime('%d %b %Y')}."
         footer_cell.alignment = Alignment(horizontal="center", vertical="center")
         footer_cell.font = Font(bold=True, italic=True)
         footer_cell.fill = PatternFill(start_color="DDDDDD", end_color="DDDDDD", fill_type="solid")
         
-        # === 第十步：保存最终版本 ===
+
         wb.save(output_path)
         print(f"✅ Excel file have been saved：{output_path}")
         
         
-        # 插入原始处理脚本代码结束
+
         st.success("✅ Data processing completed!")
 
         today_str = datetime.today().strftime("%d_%b_%Y")
